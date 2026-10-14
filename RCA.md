@@ -56,12 +56,16 @@ I chose this because it cancles the delay timer configured in the test-runner, w
 ## Defect 4: CI pipeline fails
 
 ### Symptom / error output
+The github actions CI pipeline failed at the "execute test suite" and sent "permission denied" and exit code 126.
 
 ### How I diagnosed it
+I looked at the workflow logs in github and saw that line 1 failed on the test-run.
 
 ### Root cause
+The code in "scripts/run-tests.sh" was mission permission to execute it in linux, and it was blocked.
 
 ### Fix
+I added the permission command (chmod +x) in "workflows/ci.yml", so that there is permission to execute before it runs.
 
 ---
 
