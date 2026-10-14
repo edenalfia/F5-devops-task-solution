@@ -39,12 +39,17 @@ I changed the upstream address in "proxy/nginx.conf" from "127.0.0.1:8080" to "b
 ## Defect 3: Tests still fail after fixing defect 2
 
 ### Symptom / error output
+The test-runner failed because it started before the backend was ready, which took time to start.
 
 ### How I diagnosed it
+I looked at "backend/app.py" and saw that "load_config()" had a default 2 seconds "time.sleep()" on every config item. It caused the backend to wait 8 seconds before starting, which made the test fail before the server was ready.
 
 ### Root cause
+The backend had a sleep delay when loading, so it wasn't ready to accept requests when the tests ran.
 
 ### Fix, and why I chose it over the alternatives
+I added at "docker-compose.yml" under the backend environment the line "CONFIG_FETCH_SECONDS=0".
+I chose this because it cancles the delay timer configured in the test-runner, without changing the test code.
 
 ---
 
